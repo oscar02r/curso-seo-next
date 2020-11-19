@@ -22,6 +22,7 @@
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
+    "shortid": "^2.2.16",
     "slugify": "^1.4.6",
     "string-strip-html": "^6.3.0"
   }
