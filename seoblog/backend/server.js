@@ -10,7 +10,7 @@ const authRoutes = require('./routes/auth')
 const app = express()
 // DB
 
-mongoose.connect(process.env.DATABASE_LOCAL, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true }).then(() => {
+mongoose.connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true }).then(() => {
   console.log('DB Connected.')
 })
 
