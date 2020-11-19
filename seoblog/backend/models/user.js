@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  salt: String,
+  salt:String,
   about: {
     type: String
   },
@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-userSchema.virtual('passwrod')
+userSchema.virtual('password')
         .set(function (password) {
           // Creating temporal password.
           this._password = password

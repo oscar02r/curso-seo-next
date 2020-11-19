@@ -17,6 +17,7 @@
     "standard": "^16.0.3"
   },
   "dependencies": {
+    "@types/shortid": "0.0.29",
     "express-jwt": "^6.0.0",
     "express-validator": "^6.6.1",
     "formidable": "^1.2.2",
