@@ -1,21 +1,21 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import {
   Collapse,
   Navbar,
   NavbarToggler,
-  NavbarBrand,
   Nav,
   NavItem,
   NavLink,
-  NavbarText,
 } from "reactstrap";
 
+import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
 
 const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const router = useRouter();
   const toggle = () => setIsOpen(!isOpen);
 
   return (
@@ -39,6 +39,16 @@ const Header = (props) => {
                 <NavLink>Signup</NavLink>
               </Link>
             </NavItem>
+
+            {isAuth() && (
+              <NavItem>
+                <NavLink
+                  onClick={() => signout(() => router.replace(`/signin`))}
+                >
+                  Signout
+                </NavLink>
+              </NavItem>
+            )}
           </Nav>
         </Collapse>
       </Navbar>

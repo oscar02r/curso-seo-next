@@ -4,8 +4,8 @@ import { signin, authenticate } from "../../actions/auth";
 
 const SigninComponet = () => {
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    email: "juan@gmail.com",
+    password: "12345678",
     error: "",
     loading: false,
     message: "",
