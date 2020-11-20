@@ -3,30 +3,46 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 
-exports.signup = (req, res) =>{
+exports.signup = async (req, res) =>{
    const { name, email, password } = req.body
-
-   User.findOne({email:email})
-       .exec((error, user) =>{
-            if (user) {
-               return res.status(400).json({error:"Email is taken"})
-            }
-       })
-
-     let username = shortId.generate()
-     let profile =`${process.env.CLIENT_URL}/profile/${username}` 
-    
-     let newUser = new User({name, email, password, profile, username})
+  
+   try {
+      const user =  await User.findOne({email:email})
+        
+         if (user) {
    
-     newUser.save((err, success)=>{
-         if (err) {
-            return res.status(400).json({error:err})
+            return res.status(500).json({error:"Email is taken."})
          }
-         res.status(201).json({user:success})
-         // res.status(201).json({
-            // message:'Signup success! Please signin.'
-         // })
-     })
+        
+         let username = shortId.generate()
+         let profile =`${process.env.CLIENT_URL}/profile/${username}`
+         let newUser = new User({name, email, password, profile, username})
+          await newUser.save(/*(err, success)=>{
+             if (err) {
+               
+                return res.status(400).json({error:err})
+               
+             }
+            // res.status(201).json({user:success})
+              res.status(201).json({
+                 message:'Signup success! Please signin.'
+              })
+         }*/)  
+         res.status(201).json({
+            message:'Signup success! Please signin.'
+         })
+         } catch (error) {
+          return res.status(500).json({error:error.stack})
+   }
+   
+      /* .exec((error, user) =>{
+        
+            if (user) {
+               
+               return res.status(400).json({error:"Email is taken."})
+            }
+       })*/
+
 }
 
 exports.signin = (req, res) =>{
@@ -68,7 +84,7 @@ exports.signin = (req, res) =>{
 
 exports.signout = (req, res)=>{
    res.clearCookie('token')
-   res.status(200).json({ message:'Signout success' })
+  return res.status(200).json({ message:'Signout success' })
 }
 
 exports.requireSign = expressJwt({
