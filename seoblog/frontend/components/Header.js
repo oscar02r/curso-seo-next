@@ -15,7 +15,6 @@ import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
 
 Router.events.on('routeChangeStart', (url) => NProgress.start())
-
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
