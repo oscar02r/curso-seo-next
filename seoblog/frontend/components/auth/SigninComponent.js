@@ -1,10 +1,12 @@
-import Router from 'next/router'
-import { useState } from "react";
-import { signin, authenticate } from "../../actions/auth";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { signin, authenticate, isAuth } from "../../actions/auth";
 
 const SigninComponet = () => {
+  const router = useRouter();
+
   const [values, setValues] = useState({
-    email: "juan@gmail.com",
+    email: "juliad@gmail.com",
     password: "12345678",
     error: "",
     loading: false,
@@ -12,12 +14,16 @@ const SigninComponet = () => {
     showForm: true,
   });
 
-  const {  email, password, error, loading, message, showForm } = values;
+  useEffect(() => {
+    isAuth() && router.push('/')
+  }, []);
+
+  const { email, password, error, loading, message, showForm } = values;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setValues({ ...values, loading: true, error: false });
-    const user = {  email, password };
+    const user = { email, password };
 
     signin(user).then((data) => {
       if (data.error) {
@@ -26,9 +32,15 @@ const SigninComponet = () => {
         //Save user token to cookie
         //Save user info to localstorage
         //Authenticate user
-        authenticate(data, ()=>{
-            Router.push(`/`)
-        })
+        authenticate(data, () => {
+           setValues({...values, loading:false})
+ 
+          if (isAuth() && isAuth().role === 1) {
+            router.replace('/admin');
+          } else if (isAuth() && isAuth().role === 0) {
+            router.replace('/user');
+          }
+        });
       }
     });
   };
@@ -38,11 +50,19 @@ const SigninComponet = () => {
   };
 
   const showLoading = () =>
-    loading ? <div className="alert alert-info text-center"> Loading...</div> : "";
+    loading ? (
+      <div className="alert alert-info text-center"> Loading...</div>
+    ) : (
+      ""
+    );
   const showError = () =>
     error ? <div className="alert alert-danger text-center"> {error}</div> : "";
   const showMessage = () =>
-    message ? <div className="alert alert-info text-center"> {message}</div> : "";
+    message ? (
+      <div className="alert alert-info text-center"> {message}</div>
+    ) : (
+      ""
+    );
 
   const signinForm = () => {
     return (
@@ -76,7 +96,7 @@ const SigninComponet = () => {
       {showError()}
       {showLoading()}
       {showMessage()}
-      { showForm && signinForm()}
+      {showForm && signinForm()}
     </>
   );
 };
