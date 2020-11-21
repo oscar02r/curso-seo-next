@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, Router } from "next/router";
+import NProgress from 'nprogress'
 import Link from "next/link";
 import {
   Collapse,
@@ -13,9 +14,16 @@ import {
 import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
 
+Router.events.on('routeChangeStart', (url) => NProgress.start())
+
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
+
+
 const Header = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
   return (
