@@ -22,9 +22,3 @@ exports.userSigninValidator = [
       .isLength({min:6})
       .withMessage('Password must be at least 6 caracters long.')
  ]
-
-
-
-
-
-

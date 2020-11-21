@@ -7,9 +7,10 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const blogRoutes = require('./routes/blog')
 const authRoutes = require('./routes/auth')
+const userRoutes = require('./routes/user')
+
 const app = express()
 // DB
-
 mongoose.connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true }).then(() => {
   console.log('DB Connected.')
 })
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV === 'development') {
 // Routes middleware
 app.use('/api', blogRoutes)
 app.use('/api', authRoutes)
+app.use('/api', userRoutes)
 
 // port
 const port = process.env.PORT || 9000
