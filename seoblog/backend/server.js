@@ -1,4 +1,3 @@
-
 const express = require('express')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
@@ -16,7 +15,7 @@ const app = express()
 mongoose.connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true }).then(() => {
   console.log('DB Connected.')
 })
-
+.catch(console.log)
 // middlewares
 app.use(morgan('dev'))
 app.use(cookieParser())
