@@ -32,7 +32,7 @@ exports.signup = async (req, res) =>{
             message:'Signup success! Please signin.'
          })
          } catch (error) {
-          return res.status(500).json({error:error.stack})
+          return res.status(400).json({error:error.stack})
    }
    
       /* .exec((error, user) =>{

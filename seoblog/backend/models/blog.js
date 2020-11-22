@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const {ObjectId} = mongoose.Schema
+const ObjectId = mongoose.SchemaTypes.ObjectId
 
 const blogSchema = new mongoose.Schema({
     title: {
@@ -28,9 +28,6 @@ const blogSchema = new mongoose.Schema({
     max:1000
   },
   mdesc: {
-    type: String,
-  },
-  mdescription: {
     type: String,
   },
   photo: {

@@ -1,6 +1,7 @@
 const express = require('express')
-const { time } = require('../controllers/blog')
+const { create } = require('../controllers/blog')
+const {  requireSign, adminMiddleware } = require('../controllers/auth')
 const router = express.Router()
 
-router.get('/', time)
+router.post('/blog', requireSign,adminMiddleware,create)
 module.exports = router
