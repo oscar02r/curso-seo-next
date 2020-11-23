@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 import Admin from "../../components/auth/Admin";
 
 const AdminIndex = () => {
@@ -13,7 +13,17 @@ const AdminIndex = () => {
             <ul className="list-group">
               <li className="list-group-item">
                 <Link href="/admin/crud/category-tag">
-                   <a>Create category</a>
+                  <a>Create Category</a>
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link href="/admin/crud/category-tag">
+                  <a>Create Tag</a>
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link href="/admin/crud/blog">
+                  <a>Create Blog</a>
                 </Link>
               </li>
             </ul>

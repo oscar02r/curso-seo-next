@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import Admin from "../../../components/auth/Admin";
 import Category from '../../../components/crud/Category'
+import Tag from '../../../components/crud/Tag'
+
 const CategoryTag = () => {
   return (
     <Admin>
@@ -13,7 +15,7 @@ const CategoryTag = () => {
             <Category/>
           </div>
           <div className="col-md-6">
-              <p className="text-center">Tag</p>
+              <Tag/>
           </div>
         </div>
       </div>
