@@ -8,8 +8,8 @@ import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 import { createBlog } from "../../actions/blog";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "../../node_modules/react-quill/dist/quill.snow.css";
-//import 'react-quill/dist/dist/quill.snow.css'
+import 'react-quill/dist/quill.snow.css'
+import {QuillFormats, QuillMdules} from '../../helpers/quill'
 
 const BlogCreate = ({ router }) => {
   const blogFormLS = () => {
@@ -25,8 +25,8 @@ const BlogCreate = ({ router }) => {
   };
   const [cateries, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
-  const [checkedCategory, setCheckedCategory] = useState([])
-  const [checkedTag, setCheckedTag] = useState([])
+  const [checkedCategory, setCheckedCategory] = useState([]);
+  const [checkedTag, setCheckedTag] = useState([]);
 
   const [body, setBody] = useState(blogFormLS());
   const [values, setValues] = useState({
@@ -46,7 +46,7 @@ const BlogCreate = ({ router }) => {
     title,
     hidePublishButton,
   } = values;
-  const token = getCookie('token')
+  const token = getCookie("token");
   useEffect(() => {
     setValues({ ...values, formData: new FormData() });
     initCategories();
@@ -74,16 +74,21 @@ const BlogCreate = ({ router }) => {
   };
   const publichBlog = (e) => {
     e.preventDefault();
-     createBlog(formData, token).then( data =>{
-       if (data.error) {
-          setValues({...values, error:data.error})
-       }else {
-         setValues({ ...values, title:'', error:'', success:`A new blog titled "${data.title}" is created`})
-          setBody('')
-          setCategories([])
-          setTags([])
-       }
-     })
+    createBlog(formData, token).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: "",
+          error: "",
+          success: `A new blog titled "${data.title}" is created`,
+        });
+        setBody("");
+        setCategories([]);
+        setTags([]);
+      }
+    });
   };
   const handleChange = (name) => (e) => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
@@ -99,58 +104,84 @@ const BlogCreate = ({ router }) => {
       localStorage.setItem("blog", JSON.stringify(e));
     }
   };
-  const handleToggle = (catId)=> () =>{
-        setValues({...values, error:''})
+  const handleToggle = (catId) => () => {
+    setValues({ ...values, error: "" });
 
-        //return the first index or -1
-        const clickedCategory = checkedCategory.indexOf(catId)
-        const all = [...checkedCategory]
-
-        if (clickedCategory === -1) {
-            all.push(catId)
-        }else{
-          all.splice(clickedCategory, 1)
-        }
-        console.log(all)
-        setCheckedCategory(all)
-        formData.append('categories', all)
-  }
-  const handleTagToggle = (tagId)=> () =>{
-    setValues({...values, error:''})
     //return the first index or -1
-    const clickedTag = checkedTag.indexOf(tagId)
-    const all = [...checkedTag]
-    if (clickedTag === -1) {
-        all.push(tagId)
-    }else{
-      all.splice(clickedTag, 1)
+    const clickedCategory = checkedCategory.indexOf(catId);
+    const all = [...checkedCategory];
+
+    if (clickedCategory === -1) {
+      all.push(catId);
+    } else {
+      all.splice(clickedCategory, 1);
     }
-    console.log(all)
-    setCheckedTag(all)
-    formData.append('tags', all)
-}
+    console.log(all);
+    setCheckedCategory(all);
+    formData.append("categories", all);
+  };
+  const handleTagToggle = (tagId) => () => {
+    setValues({ ...values, error: "" });
+    //return the first index or -1
+    const clickedTag = checkedTag.indexOf(tagId);
+    const all = [...checkedTag];
+    if (clickedTag === -1) {
+      all.push(tagId);
+    } else {
+      all.splice(clickedTag, 1);
+    }
+    console.log(all);
+    setCheckedTag(all);
+    formData.append("tags", all);
+  };
   const showCategories = () => {
     return (
       cateries &&
       cateries.map((c, i) => (
         <li key={i} className="un-style">
-          <input onChange={handleToggle(c._id)} type="checkbox" className="mr-2" />
+          <input
+            onChange={handleToggle(c._id)}
+            type="checkbox"
+            className="mr-2"
+          />
           <label className="form-check-label">{c.name}</label>
         </li>
       ))
     );
   };
-  const showTags = () => {    
+  const showTags = () => {
     return (
       tags &&
       tags.map((t, i) => (
         <li key={i} className="un-style">
-          <input onChange={handleTagToggle(t._id)} type="checkbox" className="mr-2" />
+          <input
+            onChange={handleTagToggle(t._id)}
+            type="checkbox"
+            className="mr-2"
+          />
           <label className="form-check-label">{t.name}</label>
         </li>
       ))
     );
   };
+
+  const showError = () => (
+    <div
+      className="alert alert-danger text-center"
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+
+  const showSuccess = () => (
+    <div
+      className="alert alert-success"
+      style={{ display: success ? "" : "none" }}
+    >
+      {success}{" "}
+    </div>
+  );
   const createBlogForm = () => (
     <form onSubmit={publichBlog}>
       <div className="form-group">
@@ -164,8 +195,8 @@ const BlogCreate = ({ router }) => {
       </div>
       <div className="form-group">
         <ReactQuill
-          modules={BlogCreate.modules}
-          formats={BlogCreate.formats}
+          modules={QuillMdules}
+          formats={QuillFormats}
           value={body}
           placeholder="Write Something amazing..."
           onChange={handleBody}
@@ -180,39 +211,50 @@ const BlogCreate = ({ router }) => {
   );
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid pb-5">
       <div className="row">
         <div className="col-md-8">
           {createBlogForm()}
-          <hr />
-          {JSON.stringify(title)}
-          <hr />
-          {JSON.stringify(body)}
-          <hr />
-          {JSON.stringify(cateries)}
-          <hr />
-          {JSON.stringify(tags)}
+
+          <div className="pt-5">
+            {showError()}
+            {showSuccess()}
+          </div>
         </div>
         <div className="col-md-4">
           <div>
             <div className="form-group pb-2">
               <h5>Featured image</h5>
-              <hr/>
-               <div> <small className="text-muted">Max size: 1mb</small></div>
-              <label  className="btn btn-outline-info">Upload featurd image
-              <input  onChange={handleChange('photo')} type="file" accept="image/*" hidden />
+              <hr />
+              <div>
+                {" "}
+                <small className="text-muted">Max size: 1mb</small>
+              </div>
+              <label className="btn btn-outline-info">
+                Upload featurd image
+                <input
+                  onChange={handleChange("photo")}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                />
               </label>
             </div>
           </div>
           <div>
             <h5>Categories</h5>
             <hr />
-            <ul style={{maxHeight:'100px', overflowY:'scroll'}}> {showCategories()}</ul>
+            <ul style={{ maxHeight: "100px", overflowY: "scroll" }}>
+              {" "}
+              {showCategories()}
+            </ul>
           </div>
           <div>
             <h5>Tags</h5>
             <hr />
-            <ul style={{maxHeight:'100px', overflowY:'scroll'}}>{showTags()}</ul>
+            <ul style={{ maxHeight: "100px", overflowY: "scroll" }}>
+              {showTags()}
+            </ul>
           </div>
         </div>
       </div>
@@ -220,33 +262,5 @@ const BlogCreate = ({ router }) => {
   );
 };
 
-BlogCreate.modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { header: [3, 4, 5, 6] }, { font: [] }],
-    [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "image", "video"],
-    ["clean"],
-    ["code-block"],
-  ],
-};
-
-BlogCreate.formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "link",
-  "image",
-  "video",
-  "code-block",
-];
 
 export default withRouter(BlogCreate);

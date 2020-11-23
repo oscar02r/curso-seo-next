@@ -1,5 +1,5 @@
 import Layout from "../components/Layout"
-import '../static/css/style.css'
+import '../style.css'
 import '../node_modules/nprogress/nprogress.css'
 function MyApp({ Component, pageProps }) {
   return (
