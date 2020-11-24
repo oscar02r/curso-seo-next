@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Router, { withRouter } from "next/router";
 import dynamic from "next/dynamic";
-//import FormData from 'form-data'
 import { getCookie, isAuth } from "../../actions/auth";
 import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
@@ -16,10 +15,10 @@ const BlogCreate = ({ router }) => {
     if (typeof window === "undefined") {
       return false;
     }
-
+         
     if (localStorage.getItem("blog")) {
       return JSON.parse(localStorage.getItem("blog"));
-    } else {
+    } else { 
       return false;
     }
   };
@@ -102,7 +101,7 @@ const BlogCreate = ({ router }) => {
     formData.append("body", e);
     if (typeof window === "undefined") {
       localStorage.setItem("blog", JSON.stringify(e));
-    }
+    } 
   };
   const handleToggle = (catId) => () => {
     setValues({ ...values, error: "" });

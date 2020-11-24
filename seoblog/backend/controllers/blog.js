@@ -117,9 +117,7 @@ exports.litsAllBlogsCategoiesTags = (req, res) => {
       }
       blogs = data;
       // Get all categories
-      Category.find({}).exec(
-        (err,
-        (c) => {
+      Category.find({}).exec((err,c) => {
           if (err) {
             return res.json({
               error: errorHandler(err),
@@ -138,7 +136,7 @@ exports.litsAllBlogsCategoiesTags = (req, res) => {
             res.json({ blogs, categories, tags, size: blogs.length });
           });
         })
-      );
+      
     });
 };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter, Router } from "next/router";
-import NProgress from 'nprogress'
+import NProgress from "nprogress";
 import Link from "next/link";
 import {
   Collapse,
@@ -13,14 +13,12 @@ import {
 
 import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
-
-Router.events.on('routeChangeStart', (url) => NProgress.start())
-Router.events.on('routeChangeComplete', () => NProgress.done())
-Router.events.on('routeChangeError', () => NProgress.done())
-
+//Load barprogress
+Router.events.on("routeChangeStart", (url) => NProgress.start());
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 const Header = (props) => {
-
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -36,6 +34,15 @@ const Header = (props) => {
 
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
+          
+              <>
+                <NavItem>
+                  <Link href="/blogs">
+                    <NavLink>Blogs</NavLink>
+                  </Link>
+                </NavItem>
+              </>
+          
             {!isAuth() && (
               <>
                 <NavItem>
@@ -60,22 +67,20 @@ const Header = (props) => {
                 </NavLink>
               </NavItem>
             )}
-            {isAuth() &&
-              isAuth().role === 0 &&
-                (
-                  <NavItem>
-                    <Link href="/user">
-                      <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
-                    </Link>
-                  </NavItem>
-                )}
+            {isAuth() && isAuth().role === 0 && (
+              <NavItem>
+                <Link href="/user">
+                  <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
+                </Link>
+              </NavItem>
+            )}
             {isAuth() && isAuth().role === 1 && (
-                  <NavItem>
-                    <Link href="/admin">
-                      <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
-                    </Link>
-                  </NavItem>
-                )}
+              <NavItem>
+                <Link href="/admin">
+                  <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
+                </Link>
+              </NavItem>
+            )}
           </Nav>
         </Collapse>
       </Navbar>
