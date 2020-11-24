@@ -3,121 +3,116 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 
-exports.signup = async (req, res) =>{
-   const { name, email, password } = req.body
-  
-   try {
-      const user =  await User.findOne({email:email})
-        
-         if (user) {
-   
-            return res.status(500).json({error:"Email is taken."})
-         }
-        
-         let username = shortId.generate()
-         let profile =`${process.env.CLIENT_URL}/profile/${username}`
-         let newUser = new User({name, email, password, profile, username})
-          await newUser.save(/*(err, success)=>{
+exports.signup = async (req, res) => {
+  const { name, email, password } = req.body
+
+  try {
+    const user = await User.findOne({ email: email })
+
+    if (user) {
+      return res.status(500).json({ error: 'Email is taken.' })
+    }
+
+    const username = shortId.generate()
+    const profile = `${process.env.CLIENT_URL}/profile/${username}`
+    const newUser = new User({ name, email, password, profile, username })
+    await newUser.save(/* (err, success)=>{
              if (err) {
-               
+
                 return res.status(400).json({error:err})
-               
+
              }
             // res.status(201).json({user:success})
               res.status(201).json({
                  message:'Signup success! Please signin.'
               })
-         }*/)  
-         res.status(201).json({
-            message:'Signup success! Please signin.'
-         })
-         } catch (error) {
-          return res.status(400).json({error:error.stack})
-   }
-   
-      /* .exec((error, user) =>{
-        
+         } */)
+    res.status(201).json({
+      message: 'Signup success! Please signin.'
+    })
+  } catch (error) {
+    return res.status(400).json({ error: error.stack })
+  }
+
+  /* .exec((error, user) =>{
+
             if (user) {
-               
+
                return res.status(400).json({error:"Email is taken."})
             }
-       })*/
-
+       }) */
 }
 
-exports.signin = (req, res) =>{
-            const { email, password} = req.body
-            // Check if user exist.
-            User.findOne({email})
-                .exec((err, user)=>{
-               if (err || !user) {
-                   return res.status(400).json({
-                      error:"User with that email or password do not exit. Plasea signup."
-                   })
-               } 
+exports.signin = (req, res) => {
+  const { email, password } = req.body
+  // Check if user exist.
+  User.findOne({ email })
+    .exec((err, user) => {
+      if (err || !user) {
+        return res.status(400).json({
+          error: 'User with that email or password do not exit. Plasea signup.'
+        })
+      }
 
-               //athenticate
-               if (!user.authenticate(password)) {
-                  return res.status(400).json({
-                     error:"Email or password do not match."
-                  })
-               }
+      // athenticate
+      if (!user.authenticate(password)) {
+        return res.status(400).json({
+          error: 'Email or password do not match.'
+        })
+      }
 
-               //Genarate token to send client
+      // Genarate token to send client
 
-               const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn:'1d'} )
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
-               res.cookie('token', token, {expiresIn:'1d'})
-               const { _id, username, name, email, role } = user
-               return res.status(200).json({
-                  token,
-                  user:{
-                     _id,
-                     username,
-                     name,
-                     email,
-                     role
-                  }
-               })
-            }) 
+      res.cookie('token', token, { expiresIn: '1d' })
+      const { _id, username, name, email, role } = user
+      return res.status(200).json({
+        token,
+        user: {
+          _id,
+          username,
+          name,
+          email,
+          role
+        }
+      })
+    })
 }
 
-exports.signout = (req, res)=>{
-   res.clearCookie('token')
-   
-  return res.status(200).json({ message:'Signout success' })
+exports.signout = (req, res) => {
+  res.clearCookie('token')
+
+  return res.status(200).json({ message: 'Signout success' })
 }
 
 exports.requireSign = expressJwt({
-    secret: process.env.JWT_SECRET,
-    algorithms: ['HS256']
+  secret: process.env.JWT_SECRET,
+  algorithms: ['HS256']
 })
 
-exports.authMiddleware = (req, res, next) =>{
-      const authUserId = req.user._id
-      User.findById({_id:authUserId}).exec((err, user)=>{
-         if (err, !user) {
-             return res.status(400).json({error:"User not found"})            
-         }
-         req.profile = user
-         next()
-      })
+exports.authMiddleware = (req, res, next) => {
+  const authUserId = req.user._id
+  User.findById({ _id: authUserId }).exec((err, user) => {
+    if (err, !user) {
+      return res.status(400).json({ error: 'User not found' })
+    }
+    req.profile = user
+    next()
+  })
 }
 
-exports.adminMiddleware = (req, res, next) =>{
-   const adminUserId = req.user._id
-   User.findById({_id:adminUserId}).exec((err, user)=>{
-      if (err, !user) {
-          return res.status(400).json({error:"User not found"})
-      }
+exports.adminMiddleware = (req, res, next) => {
+  const adminUserId = req.user._id
+  User.findById({ _id: adminUserId }).exec((err, user) => {
+    if (err, !user) {
+      return res.status(400).json({ error: 'User not found' })
+    }
 
-      if (user.role !== 1) {
-         return res.status(400).json({error:"Admin recource. Access denied"})
-      }
-      req.profile = user
-      next()
-   })
+    if (user.role !== 1) {
+      return res.status(400).json({ error: 'Admin recource. Access denied' })
+    }
+    req.profile = user
+    next()
+  })
 }
-
-
-

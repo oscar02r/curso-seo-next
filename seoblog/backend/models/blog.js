@@ -2,43 +2,43 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.SchemaTypes.ObjectId
 
 const blogSchema = new mongoose.Schema({
-    title: {
+  title: {
     type: String,
     trim: true,
     required: true,
-    min:3,
-    max:160,
-    index: true,
+    min: 3,
+    max: 160,
+    index: true
   },
-   slug : {
+  slug: {
     type: String,
-    unique:true,
+    unique: true,
     required: true,
-    index:true
+    index: true
   },
   body: {
-    type:{}, 
+    type: {},
     trim: true,
     required: true,
-    min:200,
-    max:2000000,
+    min: 200,
+    max: 2000000
   },
   excerpt: {
     type: String,
-    max:1000
+    max: 1000
   },
   mdesc: {
-    type: String,
+    type: String
   },
   photo: {
     data: Buffer,
     contentType: String
   },
-  categories:[{type:ObjectId, ref:'Category', required:true}],
-  tags:[{type:ObjectId, ref:'Tag', required:true}],
-  postedBy:{
-      type:ObjectId,
-      ref:'User'
+  categories: [{ type: ObjectId, ref: 'Category', required: true }],
+  tags: [{ type: ObjectId, ref: 'Tag', required: true }],
+  postedBy: {
+    type: ObjectId,
+    ref: 'User'
   }
 }, { timestamps: true })
 

@@ -15,13 +15,13 @@ const app = express()
 mongoose.connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true }).then(() => {
   console.log('DB Connected.')
 })
-.catch(console.log)
+  .catch(console.log)
 // middlewares
 app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(express.json())
 
-//Cors
+// Cors
 if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }))
 }
