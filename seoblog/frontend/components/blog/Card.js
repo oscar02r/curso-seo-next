@@ -9,7 +9,7 @@ const Card = ({ blog }) => {
       <Link key={i} href={`/categories/${c.slug}`}>
         <a className="btn btn-primary mr-1 ml-1 mt-3">{c.name}</a>
       </Link>
-    ));
+    )); 
   };
   const showBlogTag = (blog) => {
     return blog.tags.map((t, i) => (

@@ -1,11 +1,12 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 const Index = () => {
   return (
     <>
       <h1>Hola mundo</h1>
+      
     </>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;
