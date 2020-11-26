@@ -1,5 +1,5 @@
 const express = require('express')
-const { create, list, litsAllBlogsCategoiesTags, read, remove, update, photo } = require('../controllers/blog')
+const { create, list, litsAllBlogsCategoiesTags, read, remove, update, photo, listRelated} = require('../controllers/blog')
 const { requireSign, adminMiddleware } = require('../controllers/auth')
 const router = express.Router()
 
@@ -10,4 +10,5 @@ router.get('/blog/:slug', read)
 router.delete('/blog/:slug', requireSign, adminMiddleware, remove)
 router.put('/blog/:slug', requireSign, adminMiddleware, update)
 router.get('/blog/photo/:slug', photo)
+router.post('/blogs/related', listRelated)
 module.exports = router
