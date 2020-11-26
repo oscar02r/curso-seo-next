@@ -45,3 +45,19 @@ export const singleBlog = (slug) =>{
     })
     .catch(console.log)
 }
+
+export const listRelated = (blog) =>{
+
+    return fetch(`${API}/api/blogs/related`,{
+        method:'POST',
+        headers:{
+            Accept:'application/json',
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify(blog)
+    })
+    .then( response => {  
+        return response.json()
+    })
+    .catch(error => console.log(error))
+}
