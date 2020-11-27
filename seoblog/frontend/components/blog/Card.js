@@ -46,7 +46,7 @@ const Card = ({ blog }) => {
               src={`${API}/api/blog/photo/${blog.slug}`}
               className="img img-fluid"
               alt={blog.title}
-              style={{maxHeight:'150px', with:'auto'}}
+              style={{maxHeight:'auto', with:'100%'}}
             />
           </div>
           <div className="col-md-8">

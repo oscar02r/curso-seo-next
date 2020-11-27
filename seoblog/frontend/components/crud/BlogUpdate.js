@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { withRouter } from "next/router";
+import { withRouter, Router, useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { getCookie, isAuth } from "../../actions/auth";
 import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 import { singleBlog, updateBlog } from "../../actions/blog";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import { API } from '../../config'
 import "react-quill/dist/quill.snow.css";
 import { QuillFormats, QuillMdules } from "../../helpers/quill";
+import { DOMAIN } from "../../config";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const BlogUpdate = ({ router }) => {
+  const routerNext = useRouter();
   const [body, setBody] = useState("");
   const [cateries, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
@@ -22,6 +25,7 @@ const BlogUpdate = ({ router }) => {
     title: "",
   });
   const { error, success, formData, title } = values;
+  const token = getCookie("token");
   useEffect(() => {
     setValues({ ...values, formData: new FormData() });
     initBlog();
@@ -37,26 +41,26 @@ const BlogUpdate = ({ router }) => {
         } else {
           setValues({ ...values, title: data.title });
           setBody(data.body);
-          setCategoriesArray(data.categories)
-          setTagsArray(data.tags)
+          setCategoriesArray(data.categories);
+          setTagsArray(data.tags);
         }
       });
     }
   };
-  const setCategoriesArray = (blogCategories) =>{
-       let ca =[]
-       blogCategories.map((c)=>{
-          ca.push(c._id)
-       })
-       setCheckedCategory(ca)
-  }
-  const setTagsArray = (blogTags) =>{
-        let ta =[]
-        blogTags.map((t)=>{
-          ta.push(t._id)
-        })
-        setCheckedTag(ta)
-  }
+  const setCategoriesArray = (blogCategories) => {
+    let ca = [];
+    blogCategories.map((c) => {
+      ca.push(c._id);
+    });
+    setCheckedCategory(ca);
+  };
+  const setTagsArray = (blogTags) => {
+    let ta = [];
+    blogTags.map((t) => {
+      ta.push(t._id);
+    });
+    setCheckedTag(ta);
+  };
   const initCategories = () => {
     getCategories().then((data) => {
       if (data.error) {
@@ -99,26 +103,25 @@ const BlogUpdate = ({ router }) => {
     } else {
       all.splice(clickedTag, 1);
     }
-    console.log(all);
     setCheckedTag(all);
     formData.append("tags", all);
   };
-  const findOutCategory = (cid) =>{
-        const result = checkedCategory.indexOf(cid)
-        if (result !== -1) {
-            return true
-        }else {
-            return false
-         }
-  }
-  const findOutTag = (tid) =>{
-    const result = checkedTag.indexOf(tid)
+  const findOutCategory = (cid) => {
+    const result = checkedCategory.indexOf(cid);
     if (result !== -1) {
-        return true
-    }else {
-        return false
-     }
-}
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const findOutTag = (tid) => {
+    const result = checkedTag.indexOf(tid);
+    if (result !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const showCategories = () => {
     return (
       cateries &&
@@ -153,16 +156,50 @@ const BlogUpdate = ({ router }) => {
   };
   const handleBody = (e) => {
     setBody(e);
-    formData.set("body", e);
+    formData.append("body", e);
   };
   const handleChange = (name) => (e) => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
     formData.append(name, value);
     setValues({ ...values, [name]: value, formData, error: "" });
   };
-  const editBlog = () => {
-    console.log("Update blog");
+  const editBlog = (e) => {
+    e.preventDefault();
+    updateBlog(formData, token, router.query.slug).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: "",
+          success: `Blog titled ${data.title} is succefully updated.`,
+        });
+        if (isAuth() && isAuth().role === 1) {
+          //  routerNext.replace(`${DOMAIN}/admin/crud/${router.query.slug}`)
+          routerNext.replace(`/admin`);
+        } else if (isAuth() && isAuth().role === 1) {
+          // routerNext.replace(`${DOMAIN}/user/crud/${router.query.slug}`)
+          routerNext.replace(`/user`);
+        }
+      }
+    });
   };
+  const showError = () => (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+  const showSuccess = () => (
+    <div
+      className="alert alert-success"
+      style={{ display: success ? "" : "none" }}
+    >
+      {success}
+    </div>
+  );
   const updateBlogForm = () => (
     <form onSubmit={editBlog}>
       <div className="form-group">
@@ -196,8 +233,12 @@ const BlogUpdate = ({ router }) => {
         <div className="col-md-8">
           {updateBlogForm()}
           <div className="pt-5">
-            <p>Show success and error</p>
+            {showSuccess()}
+            {showError()}
           </div>
+        
+          <img src={`${API}/api/blog/photo/${router.query.slug}`} style={{width:"100%"}}
+           alt={title}/> 
         </div>
         <div className="col-md-4">
           <div>
