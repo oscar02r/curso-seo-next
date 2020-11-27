@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
-import Router, { withRouter } from "next/router";
+import  { withRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { getCookie, isAuth } from "../../actions/auth";
 import { getCategories } from "../../actions/category";
