@@ -152,7 +152,7 @@ exports.read = (req, res) => {
     .exec((err, data) => {
       if (err) {
         return res.json({
-          error: errorHandler(err),
+          error:'Error servidor' //errorHandler(err),
         });
       }
       res.json(data);
@@ -222,19 +222,19 @@ exports.update = async (req, res) => {
   });
 };
 
-exports.photo = (req, res)=>{
+exports.photo = async (req, res)=>{
   const slug = req.params.slug.toLowerCase();
-  Blog.findOne({slug}) 
-  .select('photo')
-  .exec((err, blog)=>{
-      if (err || !blog) {
-        return res.status(400).json(errorHandler(err))
-      }
+  try {
+   const blog = await Blog.findOne({slug}).select('photo')
+ 
+     res.set('Content-Type', blog.photo.contentType)
+     return res.send(blog.photo.data)
+ 
+  } catch (err) {
+    return res.status(400).json(errorHandler(err))
+  }
 
-      res.set('Content-Type', blog.photo.contentType)
-      return res.send(blog.photo.data)
 
-  })
 }
 
 exports.listRelated = (req, res)=>{
@@ -247,7 +247,7 @@ exports.listRelated = (req, res)=>{
         .select('title slug excerpt postedBy createdAt updatedAt')
         .exec((err, blogs)=>{
             if (err) {
-                return res.status(400).json(blogs)
+                return res.status(400).json({error: 'Blog not found.'})
             }
             res.json(blogs)
         })
