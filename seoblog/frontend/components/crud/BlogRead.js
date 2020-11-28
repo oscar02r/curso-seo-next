@@ -62,14 +62,14 @@ const BlogRead = () => {
             Written by {blog.postedBy.name} | Published on{" "}
             {moment(blog.updatedAt).fromNow()}
           </p>
-          <butto
+          <button
             className="btn btn-sm btn-danger"
             onClick={() => {
               deleteConfirm(blog.slug);
             }}
           >
             Delete
-          </butto>
+          </button>
           {showUpdateButton(blog)}
         </div>
       );

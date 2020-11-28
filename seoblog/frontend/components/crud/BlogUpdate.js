@@ -9,7 +9,9 @@ import { API } from '../../config'
 import "react-quill/dist/quill.snow.css";
 import { QuillFormats, QuillMdules } from "../../helpers/quill";
 import { DOMAIN } from "../../config";
+import 'draft-js'
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
 
 const BlogUpdate = ({ router }) => {
   const routerNext = useRouter();
@@ -21,7 +23,7 @@ const BlogUpdate = ({ router }) => {
   const [values, setValues] = useState({
     error: "",
     success: "",
-    formData: "",
+    formData:"",
     title: "",
   });
   const { error, success, formData, title } = values;
@@ -89,7 +91,7 @@ const BlogUpdate = ({ router }) => {
     } else {
       all.splice(clickedCategory, 1);
     }
-    console.log(all);
+
     setCheckedCategory(all);
     formData.append("categories", all);
   };
@@ -156,7 +158,10 @@ const BlogUpdate = ({ router }) => {
   };
   const handleBody = (e) => {
     setBody(e);
-    formData.append("body", e);
+    
+     formData.append("body", e);
+   
+    
   };
   const handleChange = (name) => (e) => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
@@ -212,13 +217,14 @@ const BlogUpdate = ({ router }) => {
         />
       </div>
       <div className="form-group">
-        <ReactQuill
+       { <ReactQuill
           modules={QuillMdules}
           formats={QuillFormats}
           value={body}
           placeholder="Write Something amazing..."
-          onChange={handleBody}
-        />
+          onChange={ handleBody}
+        />}
+      
       </div>
       <div>
         <button type="submit" className="btn btn-primary">

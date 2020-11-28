@@ -29,7 +29,6 @@ const BlogCreate = ({ router }) => {
   const [body, setBody] = useState(blogFormLS());
   const [values, setValues] = useState({
     error: "",
-    sizeError: "",
     success: "",
     formData: "",
     title: "",
@@ -38,7 +37,6 @@ const BlogCreate = ({ router }) => {
 
   const {
     error,
-    sizeError,
     success,
     formData,
     title,
@@ -49,7 +47,6 @@ const BlogCreate = ({ router }) => {
     setValues({ ...values, formData: new FormData() });
     initCategories();
     initTags();
-    console.log("uese effect");
   }, [router]);
 
   const initCategories = () => {

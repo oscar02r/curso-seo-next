@@ -55,3 +55,11 @@ export const removeTag = (slug, token) =>{
     })
     .catch(error => console.log(error))
 }
+export const singleTag = (slug) =>{
+    return fetch(`${API}/api/tag/${slug}`,{
+        method:'GET'
+    }).then( response =>{
+        return response.json()
+    })
+    .catch(console.log)
+}

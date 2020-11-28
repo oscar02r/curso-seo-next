@@ -39,7 +39,16 @@ export const getCategorY = (slug ) =>{
     })
     .catch(error => console.log(error))
 }
-
+export const singleCategory = (slug ) =>{
+    
+    return fetch(`${API}/api/category/${slug}`,{
+        method:'GET',
+    })
+    .then( response => {  
+        return response.json()
+    })
+    .catch(error => console.log(error))
+}
 export const removeCategory = (slug, token) =>{
     
     return fetch(`${API}/api/category/${slug}`,{

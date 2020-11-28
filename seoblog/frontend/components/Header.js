@@ -18,7 +18,7 @@ Router.events.on("routeChangeStart", (url) => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
 
-const Header = (props) => {
+const Header = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -60,7 +60,7 @@ const Header = (props) => {
             {isAuth() && (
               <NavItem>
                 <NavLink
-                  style={{ cursor: "pointer" }}
+                  //style={{ cursor: "pointer" }}
                   onClick={() => signout(() => router.replace(`/signin`))}
                 >
                   Signout
