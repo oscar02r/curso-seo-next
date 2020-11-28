@@ -255,3 +255,18 @@ exports.listRelated = (req, res)=>{
 
 }
 
+exports.listSearch = (req, res) =>{
+     const {search} = req.query
+     if (search) {
+
+       Blog.find({$or:[{title:{$regex:search, $option:'i'}}, {body:{$regex:search, $option:'i'}}]
+      }, (err, blogs)=>{
+         if (err) {
+           res.status(400).json({error:errorHandler(err)})
+         }
+           res.status(200).json({blogs})
+         
+      }).select('-photo -body') 
+
+     }
+}
