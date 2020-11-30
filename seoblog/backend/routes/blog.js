@@ -11,5 +11,5 @@ router.delete('/blog/:slug', requireSign, adminMiddleware, remove)
 router.put('/blog/:slug', requireSign, adminMiddleware, update)
 router.get('/blog/photo/:slug', photo)
 router.post('/blogs/related', listRelated)
-router.post('/blogs/search', listSearch)
+router.get('/blogs/search', listSearch)
 module.exports = router

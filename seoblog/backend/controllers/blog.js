@@ -1,7 +1,7 @@
 const formidable = require("formidable");
+const _ = require("lodash");
 const slugify = require("slugify");
 const stripHtml = require("string-strip-html");
-const _ = require("lodash");
 const fs = require("fs");
 const Blog = require("../models/blog");
 const Category = require("../models/category");
@@ -243,7 +243,7 @@ exports.listRelated = (req, res)=>{
 
     Blog.find({_id:{ $ne:_id}, categories:{$in:categories}})
         .limit(limit)
-        .populate('postedBy', '_id name profile')
+        .populate('postedBy', '_id name username profile')
         .select('title slug excerpt postedBy createdAt updatedAt')
         .exec((err, blogs)=>{
             if (err) {
@@ -255,18 +255,23 @@ exports.listRelated = (req, res)=>{
 
 }
 
-exports.listSearch = (req, res) =>{
-     const {search} = req.query
+exports.listSearch = async (req, res) =>{
+     
+     let {search} = req.query
      if (search) {
-
-       Blog.find({$or:[{title:{$regex:search, $option:'i'}}, {body:{$regex:search, $option:'i'}}]
-      }, (err, blogs)=>{
-         if (err) {
-           res.status(400).json({error:errorHandler(err)})
-         }
-           res.status(200).json({blogs})
-         
-      }).select('-photo -body') 
-
+      try {
+        const blogs =  await Blog.find({
+          $or:[{title:{$regex:search, $options:'i'}}, {body:{$regex:search, $options:'i'}}]
+        }).select('-photo -body')
+       console.log(blogs)
+      res.status(200).json(blogs)
+        
+       
+       } catch (err) {
+        res.status(400).json({error:errorHandler(err)})
+       }
+     }else{
+       res.status(200).json([])
      }
+
 }

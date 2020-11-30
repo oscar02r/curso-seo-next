@@ -1,9 +1,11 @@
 const express = require('express')
 const { requireSign, authMiddleware, adminMiddleware } = require('../controllers/auth')
-const { read } = require('../controllers/user')
+const { read,  publicProfile , update, photo} = require('../controllers/user')
 
 const router = express.Router()
 
-router.get('/profile', requireSign, authMiddleware, authMiddleware, read)
-
+router.get('/user/profile', requireSign, authMiddleware, read)
+router.get('/user/:username', publicProfile)
+router.put('/user/update', requireSign, authMiddleware,  update)
+router.get('/user/photo/:username', publicProfile)
 module.exports = router
