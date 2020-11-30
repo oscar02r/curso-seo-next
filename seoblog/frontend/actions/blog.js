@@ -106,6 +106,7 @@ export const updateBlog = (blog, token, slug) =>{
 
 export const listSearch = (params) =>{
     let query = queyStrig.stringify(params)
+
     return fetch(`${API}/api/blogs/search?${query}`,{
         method:'GET'
     }).then( response =>{

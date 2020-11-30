@@ -9,7 +9,6 @@ import { API } from '../../config'
 import "react-quill/dist/quill.snow.css";
 import { QuillFormats, QuillMdules } from "../../helpers/quill";
 import { DOMAIN } from "../../config";
-import 'draft-js'
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 
@@ -26,10 +25,10 @@ const BlogUpdate = ({ router }) => {
     formData:"",
     title: "",
   });
-  const { error, success, formData, title } = values;
+  let { error, success, formData, title } = values;
   const token = getCookie("token");
   useEffect(() => {
-    setValues({ ...values, formData: new FormData() });
+    setValues({ ...values, formData:new FormData() });
     initBlog();
     initCategories();
     initTags();
@@ -158,9 +157,11 @@ const BlogUpdate = ({ router }) => {
   };
   const handleBody = (e) => {
     setBody(e);
-    
-     formData.append("body", e);
-   
+   //let blogFormData = new FormData()
+   //blogFormData.append("body", e);
+    formData.append("body", e);
+    formData.append("body", e)
+     setValues({...values, formData})
     
   };
   const handleChange = (name) => (e) => {

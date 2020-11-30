@@ -13,6 +13,8 @@ import {
 
 import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
+import Search from '../components/blog/Search'
+
 //Load barprogress
 Router.events.on("routeChangeStart", (url) => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -24,6 +26,7 @@ const Header = () => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
+    <>
     <div>
       <Navbar color="light" light expand="md">
         <Link href="/">
@@ -85,6 +88,8 @@ const Header = () => {
         </Collapse>
       </Navbar>
     </div>
+    <Search/>
+    </>
   );
 };
 
