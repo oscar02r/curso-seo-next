@@ -13,7 +13,7 @@ import {
 
 import { isAuth, signout } from "../actions/auth";
 import { APP_NAME } from "../config";
-import Search from '../components/blog/Search'
+import Search from "../components/blog/Search";
 
 //Load barprogress
 Router.events.on("routeChangeStart", (url) => NProgress.start());
@@ -27,17 +27,16 @@ const Header = () => {
 
   return (
     <>
-    <div>
-      <Navbar color="light" light expand="md">
-        <Link href="/">
-          <NavLink className="font-weight-bold">{APP_NAME}</NavLink>
-        </Link>
+      <div>
+        <Navbar color="light" light expand="md">
+          <Link href="/">
+            <NavLink className="font-weight-bold">{APP_NAME}</NavLink>
+          </Link>
 
-        <NavbarToggler onClick={toggle} />
+          <NavbarToggler onClick={toggle} />
 
-        <Collapse isOpen={isOpen} navbar>
-          <Nav className="ml-auto" navbar>
-          
+          <Collapse isOpen={isOpen} navbar>
+            <Nav className="ml-auto" navbar>
               <>
                 <NavItem>
                   <Link href="/blogs">
@@ -45,50 +44,57 @@ const Header = () => {
                   </Link>
                 </NavItem>
               </>
-          
-            {!isAuth() && (
-              <>
+
+              {!isAuth() && (
+                <>
+                  <NavItem>
+                    <Link href="/signin">
+                      <NavLink>Signin</NavLink>
+                    </Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link href="/signup">
+                      <NavLink>Signup</NavLink>
+                    </Link>
+                  </NavItem>
+                </>
+              )}
+              {isAuth() && (
                 <NavItem>
-                  <Link href="/signin">
-                    <NavLink>Signin</NavLink>
+                  <NavLink
+                    //style={{ cursor: "pointer" }}
+                    onClick={() => signout(() => router.replace(`/signin`))}
+                  >
+                    Signout
+                  </NavLink>
+                </NavItem>
+              )}
+              {isAuth() && isAuth().role === 0 && (
+                <NavItem>
+                  <Link href="/user">
+                    <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
                   </Link>
                 </NavItem>
+              )}
+              {isAuth() && isAuth().role === 1 && (
                 <NavItem>
-                  <Link href="/signup">
-                    <NavLink>Signup</NavLink>
+                  <Link href="/admin">
+                    <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
                   </Link>
                 </NavItem>
-              </>
-            )}
-            {isAuth() && (
+              )}
               <NavItem>
-                <NavLink
-                  //style={{ cursor: "pointer" }}
-                  onClick={() => signout(() => router.replace(`/signin`))}
-                >
-                  Signout
-                </NavLink>
-              </NavItem>
-            )}
-            {isAuth() && isAuth().role === 0 && (
-              <NavItem>
-                <Link href="/user">
-                  <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
+                <Link href="/user/crud/blog">
+                  <NavLink className="btn btn-primary text-light">
+                    Write a blog
+                  </NavLink>
                 </Link>
               </NavItem>
-            )}
-            {isAuth() && isAuth().role === 1 && (
-              <NavItem>
-                <Link href="/admin">
-                  <NavLink>{`${isAuth().name}'s Dashboard`}</NavLink>
-                </Link>
-              </NavItem>
-            )}
-          </Nav>
-        </Collapse>
-      </Navbar>
-    </div>
-    <Search/>
+            </Nav>
+          </Collapse>
+        </Navbar>
+      </div>
+      <Search />
     </>
   );
 };

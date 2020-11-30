@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Router from "next/router";
-import { getCookie, isAuth } from "../../actions/auth";
+import { getCookie, isAuth, updateUser } from "../../actions/auth";
 import { getProfile, update } from "../../actions/user";
+import { API } from "../../config";
 
 const ProfileUpdate = () => {
   const [values, setValues] = useState({
@@ -53,19 +54,31 @@ const ProfileUpdate = () => {
 
   const handleChange = (name) => (e) => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
-    let userFormData = new FormData()
+    let userFormData = new FormData();
     userFormData.append(name, value);
-    setValues({ ...values, [name]: value, userData:userFormData, error: false, success:false });
+    setValues({
+      ...values,
+      [name]: value,
+      userData: userFormData,
+      error: false,
+      success: false,
+    });
   };
-  
+
   const handleSubmit = (e) => {
-      e.preventDefault()
-      setValues({...values, loading:true})
-      update(token, userData).then(data=>{
-          if (data.error) {
-              setValues({...values, error:data.error, success:false, loading:false})
-          }else {
-            setValues({ 
+    e.preventDefault();
+    setValues({ ...values, loading: true });
+    update(token, userData).then((data) => {
+      if (data.error) {
+        setValues({
+          ...values,
+          error: data.error,
+          success: false,
+          loading: false,
+        });
+      } else {
+         updateUser(data, ()=>{
+          setValues({
             username: data.username,
             name: data.name,
             email: data.email,
@@ -73,11 +86,11 @@ const ProfileUpdate = () => {
             loading: false,
             photo: "",
             userData: "",
-            about: data.about
-        })
-          }
-
-      })
+            about: data.about,
+          });
+         })
+      }
+    });
   };
   const profileUpdateform = () => (
     <form onSubmit={handleSubmit}>
@@ -144,12 +157,49 @@ const ProfileUpdate = () => {
       </div>
     </form>
   );
+  const showError = () => (
+    <div
+      className="alert alert-danger text-center pt-3 pb-3 "
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+  const showLoading = () => (
+    <div
+      className="alert alert-info text-center pt-3 pb-3 "
+      style={{ display: loading ? "" : "none" }}
+    >
+      Loading....
+    </div>
+  );
+  const showSuccess = () => (
+    <div
+      className="alert alert-info text-center pt-3 pb-3 "
+      style={{ display: success ? "" : "none" }}
+    >
+      Successfuly updated.
+    </div>
+  );
   return (
     <>
       <div className="container">
         <div className="row">
-          <div className="col-md-4">image</div>
-          <div className="col-md-8">{profileUpdateform()}</div>
+          <div className="col-md-4">
+            <img
+              src={`${API}/api/user/photo/${username}`}
+              className="img img-fluid img-thumbnail mb-3"
+              alt={username}
+              style={{ maxHeight: "auto", maxWidth : "100%" }}
+            />
+          </div>
+
+          <div className="col-md-8">
+            {showLoading()}
+            {showSuccess()}
+            {showError()}
+            {profileUpdateform()}
+          </div>
         </div>
       </div>
     </>
