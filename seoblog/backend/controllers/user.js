@@ -35,7 +35,7 @@ exports.publicProfile = async (req, res) =>{
             }
            res.status(200).json({user, blogs})
     } catch (err) {
-      res.status(400).json({error:errorHandler (err)})
+      res.status(400).json({error: errorHandler(err)})
     }
 }
 
@@ -68,6 +68,8 @@ exports.update = (req, res) =>{
                   })
                   }
                   user.hashed_password = undefined
+                  user.salt = undefined
+                  user.photo =undefined
                   res.status(200).json(user)
                 })
      })
