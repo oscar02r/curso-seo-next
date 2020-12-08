@@ -6,6 +6,7 @@ import moment from "moment";
 import reactHtmlParser from "react-html-parser";
 import { APP_NAME, DOMAIN, API, FB_APP_ID } from "../../config";
 import SmallCard from "../../components/blog/SmallCard";
+import DisqusThread from '../../components/DisqusThread'
 
 const SingleBlog = ({ blog, query }) => {
   const [related, setRelated] = useState([])
@@ -76,6 +77,14 @@ const SingleBlog = ({ blog, query }) => {
         </div>
       ))
   }
+
+  const showComments = () =>{
+      return (
+        <div>
+          <DisqusThread id={blog._id} title={blog.title} path={`/blog/${blog.slug}`} />
+        </div>
+      )
+  }
   return (
     <>
     {head()}
@@ -93,7 +102,7 @@ const SingleBlog = ({ blog, query }) => {
           </section>
           <section>
             <div className="container">
-              <h1 className="display-2 pb-3 pt-3 text-center font-weight-bold">
+              <h1 className=" display-2  pb-3 pt-3 text-center font-weight-bold" >
                 {blog.title}
               </h1>
               <p className="lead mt-3 mark">
@@ -123,7 +132,7 @@ const SingleBlog = ({ blog, query }) => {
           </div>
         </div>
         <div className="container pb-5 pt-5 h2 text-center">
-          <p>Show comments</p>
+         {showComments()}
         </div>
       </article>
     </main>

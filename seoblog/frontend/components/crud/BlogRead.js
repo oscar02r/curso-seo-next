@@ -5,16 +5,17 @@ import Router from "next/router";
 import { getCookie, isAuth } from "../../actions/auth";
 import { list, removeBlog } from "../../actions/blog";
 
-const BlogRead = () => {
+const BlogRead = ({username}) => {
   const [blogs, setBlogs] = useState([]);
   const [message, setmessage] = useState("");
   const token = getCookie("token");
+
   useEffect(() => {
     loadBlogs();
   }, []);
 
   const loadBlogs = () => {
-    list().then((data) => {
+    list(username).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
@@ -42,7 +43,7 @@ const BlogRead = () => {
     if (isAuth() && isAuth().role === 0) {
       return (
         <Link href={`/user/crud/${blog.slug}`}>
-          <a className="btn btn-sm btn-warning" >Update</a>
+          <a className="ml-2 btn btn-sm btn-warning" >Update</a>
         </Link>
       );
     } else if (isAuth() && isAuth().role === 1) {
@@ -60,7 +61,7 @@ const BlogRead = () => {
           <h3>{blog.title}</h3>
           <p className="mark">
             Written by {blog.postedBy.name} | Published on{" "}
-            {moment(blog.updatedAt).fromNow()}
+            {moment(blog.createdAt).fromNow()}
           </p>
           <button
             className="btn btn-sm btn-danger"

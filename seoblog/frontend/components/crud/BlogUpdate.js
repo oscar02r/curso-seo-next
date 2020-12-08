@@ -12,6 +12,7 @@ import { DOMAIN } from "../../config";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 
+
 const BlogUpdate = ({ router }) => {
   const routerNext = useRouter();
   const [body, setBody] = useState("");
@@ -92,7 +93,7 @@ const BlogUpdate = ({ router }) => {
     }
 
     setCheckedCategory(all);
-    formData.append("categories", all);
+    formData.set("categories", all);
   };
   const handleTagToggle = (tagId) => () => {
     setValues({ ...values, error: "" });
@@ -105,7 +106,7 @@ const BlogUpdate = ({ router }) => {
       all.splice(clickedTag, 1);
     }
     setCheckedTag(all);
-    formData.append("tags", all);
+    formData.set("tags", all);
   };
   const findOutCategory = (cid) => {
     const result = checkedCategory.indexOf(cid);
@@ -155,20 +156,20 @@ const BlogUpdate = ({ router }) => {
       ))
     );
   };
-  const handleBody = (e) => {
-    setBody(e);
-   //let blogFormData = new FormData()
-   //blogFormData.append("body", e);
-    formData.append("body", e);
-    formData.append("body", e)
-     setValues({...values, formData})
-    
-  };
   const handleChange = (name) => (e) => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
-    formData.append(name, value);
+    formData.set(name, value);
     setValues({ ...values, [name]: value, formData, error: "" });
   };
+  const handleBody = e => {
+    setBody(e);
+      formData.set('body', e);
+   
+};
+  
+  
+  
+  
   const editBlog = (e) => {
     e.preventDefault();
     updateBlog(formData, token, router.query.slug).then((data) => {
@@ -183,7 +184,7 @@ const BlogUpdate = ({ router }) => {
         if (isAuth() && isAuth().role === 1) {
           //  routerNext.replace(`${DOMAIN}/admin/crud/${router.query.slug}`)
           routerNext.replace(`/admin`);
-        } else if (isAuth() && isAuth().role === 1) {
+        } else if (isAuth() && isAuth().role === 0) {
           // routerNext.replace(`${DOMAIN}/user/crud/${router.query.slug}`)
           routerNext.replace(`/user`);
         }

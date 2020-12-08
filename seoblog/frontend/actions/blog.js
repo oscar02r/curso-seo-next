@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import { API } from '../config'
 import queyStrig from 'query-string'
-import { isAuth } from '../actions/auth'
+import { isAuth, handleResponse } from '../actions/auth'
 
 export const createBlog = (blog, token) =>{
     let createBlogEndpoint ;
@@ -19,6 +19,7 @@ export const createBlog = (blog, token) =>{
         body:blog
     })
     .then( response => {  
+        handleResponse(response)
         return response.json()
     })
     .catch(error => console.log(error))
@@ -68,8 +69,15 @@ export const listRelated = (blog) =>{
     .catch(error => console.log(error))
 }
 
-export const list = () =>{
-    return fetch(`${API}/api/blogs`,{
+export const list = (username) =>{
+
+    let listBlogsEndpoint ;
+    if (username) {
+        listBlogsEndpoint = `${API}/api/${username}/blogs`
+    }else {
+      listBlogsEndpoint = `${API}/api/blogs`
+    }
+    return fetch(`${listBlogsEndpoint}`,{
         method:'GET'
     }).then( response =>{
         return response.json()
@@ -78,8 +86,14 @@ export const list = () =>{
 }
 
 export const removeBlog = (slug, token) =>{
-    
-    return fetch(`${API}/api/blog/${slug}`,{
+    let deleteBlogEndpoint ;
+    if (isAuth() && isAuth().role === 1) {
+        deleteBlogEndpoint = `${API}/api/blog/${slug}`
+    }else if(isAuth() && isAuth().role === 0){
+      deleteBlogEndpoint = `${API}/api/user/blog/${slug}`
+    }
+
+    return fetch(`${deleteBlogEndpoint}`,{
         method:'DELETE',
         headers:{
             Accept:'application/json',
@@ -89,14 +103,20 @@ export const removeBlog = (slug, token) =>{
     
     })
     .then( response => {  
+        handleResponse(response)
         return response.json()
     })
     .catch(error => console.log(error))
 }
 
 export const updateBlog = (blog, token, slug) =>{
-    
-    return fetch(`${API}/api/blog/${slug}`,{
+    let updateBlogEndpoint ;
+if (isAuth() && isAuth().role === 1) {
+    updateBlogEndpoint = `${API}/api/blog/${slug}`
+}else if(isAuth() && isAuth().role === 0){
+  updateBlogEndpoint = `${API}/api/user/blog/${slug}`
+}
+    return fetch(`${updateBlogEndpoint}`,{
         method:'PUT',
         headers:{
             Accept:'application/json',
@@ -105,6 +125,7 @@ export const updateBlog = (blog, token, slug) =>{
         body:blog
     })
     .then( response => {  
+        handleResponse(response)
         return response.json()
     })
     .catch(error => console.log(error))

@@ -147,11 +147,11 @@ exports.forgotPassword = async (req, res) =>{
     }
     const token = jwt.sign({ _id:user._id }, process.env.JWT_RESET_PASSWORD, { expiresIn:'10m' })
     const transport = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host:process.env.HOST_EMAIL,
       port: 587,
       auth: {
-          user: 'oscary.ramirez@gmail.com',
-          pass: '011888112401Bb'
+          user: process.env.USER_EMAIL,
+          pass: process.env.USER_EMAIL_PASSWORD
       }
   });
 
