@@ -4,11 +4,13 @@ const slugify = require("slugify");
 const stripHtml = require("string-strip-html");
 const fs = require("fs");
 const Blog = require("../models/blog");
+const User = require('../models/user')
 const Category = require("../models/category");
 const Tag = require("../models/tag");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const { smartTrim } = require("../helpers/blog");
 const stringStripHtml = require("string-strip-html");
+
 
 exports.create = async (req, res) => {
   let form = new formidable.IncomingForm();
@@ -274,4 +276,21 @@ exports.listSearch = async (req, res) =>{
        res.status(200).json([])
      }
 
+}
+
+exports.listByUser = async (req, res)=>{
+    const {username} = req.params
+   try {
+     const user = await User.findOne({username})
+     const userId = user._id
+
+     const blogs = await Blog.find({postedBy:userId})
+                             .populate('categories', '_id name slug') 
+                             .populate('tags', '_id name slug')
+                             .populate('postedBy', '_id name username')
+                             .select('_id title slug postedBy createdAt updatedAt')
+     res.status(200).json(blogs)
+   } catch (err) {
+     res.status(400).json({error:errorHandler(err)})
+   }
 }
