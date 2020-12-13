@@ -158,7 +158,7 @@ exports.forgotPassword = async (req, res) =>{
     let html = `
 
        <p>Please use the following link to reset your password</p>
-       <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
+       <a>${process.env.CLIENT_URL}/auth/password/reset/${token}</a>
        <hr />
        <p>This email contain sensitve information</p>
        <p>https://devcoding.com</p>
@@ -188,17 +188,19 @@ exports.forgotPassword = async (req, res) =>{
 
 exports.resetPassword = async (req, res) =>{
   const {resetPasswordLink, newPassword} = req.body 
+  if (resetPasswordLink) {
+    jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD, function (err, decoded) {
+     if (err) {
+      return res.status(401).json({error:'Expired link. Try againsss.'})
+     }
+    })
+   }else{
 
   try {
-      if (resetPasswordLink) {
-      const data = await jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD)
-     
-      res.status(200).json(data)
-      }
       
-      const user = await User.findOne({resetPasswordLink})
+      let user = await User.findOne({resetPasswordLink})
      if (!user) {
-         res.status(401).json({error:'Something went wrong. Try later.'})
+       return  res.status(401).json({error:'Something went wrong. Try again.'})
      }
      const updatedFiels = {
          password: newPassword,
@@ -209,7 +211,10 @@ exports.resetPassword = async (req, res) =>{
      res.status(200).json({
        message:'Great! Now you can login with your new password.'
      })
-    } catch (error) {
-      res.status(401).json({error:errorHandler(error )})
+    } catch (err) {
+
+      res.status(401).json({error:'Something went wrong. Try again.'})
     }
+
+  }
 }
